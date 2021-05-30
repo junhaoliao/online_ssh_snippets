@@ -13,31 +13,30 @@ const conn = new Client();
 conn.on('ready', () => {
     console.log('Client :: ready');
     const localSrv = net.createServer((localStream) => {
+        localStream.on('close', err => {
+            console.log("localStream closed")
+        })
+
         conn.forwardOut('localhost', port, 'localhost', port, (err, remoteStream) => {
             if (err) {
                 throw err;
             }
-
-            localStream.on('close', err => {
-                console.log("localStream closed")
-            })
+            console.log("forwardOut :: Channel created");
 
             remoteStream.on('finish', err => {
                 console.log("remoteStream finish")
             })
 
             remoteStream.pipe(localStream).pipe(remoteStream);
+            console.log("Tunnel established")
         });
     });
-
-    localSrv.on("error", (err) => {
-        console.log("localSrv err:", err);
-    })
 
     localSrv.listen(port, "localhost", err => {
         if (err) {
             throw err;
         }
+        console.log(`localSrv :: listening on port ${port}`);
     });
 
 }).connect({
