@@ -1,6 +1,6 @@
-"use strict";
+'use strict';
 
-const {SSHKeyPair} = require("./SSHKeyPair.js");
+const {SSHKeyPair} = require('./SSHKeyPair.js');
 
 const start = Date.now();
 

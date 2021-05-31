@@ -22,7 +22,7 @@ class SSHKeyPair {
         return parsePrivateKey(this.privateKey, 'pem').toString('ssh-private');
     }
 
-    SSHPublicKey(filename = "") {
+    SSHPublicKey(filename = '') {
         return parseKey(this.publicKey, 'pem', {filename: filename}).toString('ssh');
     }
 }

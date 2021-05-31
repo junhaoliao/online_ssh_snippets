@@ -1,5 +1,5 @@
 const {Client} = require('ssh2');
-const net = require("net");
+const net = require('net');
 
 const productionMode = process.env.NODE_ENV === 'production'
 
@@ -14,25 +14,25 @@ conn.on('ready', () => {
     console.log('Client :: ready');
     const localSrv = net.createServer((localStream) => {
         localStream.on('close', err => {
-            console.log("localStream closed")
+            console.log('localStream closed')
         })
 
         conn.forwardOut('localhost', port, 'localhost', port, (err, remoteStream) => {
             if (err) {
                 throw err;
             }
-            console.log("forwardOut :: Channel created");
+            console.log('forwardOut :: Channel created');
 
             remoteStream.on('finish', err => {
-                console.log("remoteStream finish")
+                console.log('remoteStream finish')
             })
 
             remoteStream.pipe(localStream).pipe(remoteStream);
-            console.log("Tunnel established")
+            console.log('Tunnel established')
         });
     });
 
-    localSrv.listen(port, "localhost", err => {
+    localSrv.listen(port, 'localhost', err => {
         if (err) {
             throw err;
         }
@@ -49,7 +49,7 @@ conn.on('ready', () => {
 // TODO: rethink this and look for better mitigation methods
 process.on('uncaughtException', (err, origin) => {
     if (err.errno === -54 && err.code === 'ECONNRESET' && err.syscall === 'read') {
-        console.log("tunnel connection terminated... ")
+        console.log('tunnel connection terminated... ')
     } else if (productionMode) {
         console.log(err)
     } else {
